@@ -110,11 +110,11 @@ module.exports = function bootstrap() {
     var markdownURL = _ref.markdownURL;
     var viewerPath = _ref.viewerPath;
 
-    if (pdfURL) {
-        context.PDFAction.load(pdfURL);
-    }
     if (viewerPath) {
         context.PDFAction.changeViewerPath(viewerPath);
+    }
+    if (pdfURL) {
+        context.PDFAction.load(pdfURL);
     }
     if (markdownURL) {
         context.editorAction.openFile(markdownURL);
@@ -1014,7 +1014,7 @@ var EditorStore = (function (_Store) {
     }, {
         key: "onChangeViewerPath",
         value: function onChangeViewerPath(filePath) {
-            this.setStae({
+            this.setState({
                 viewerPath: filePath
             });
         }
