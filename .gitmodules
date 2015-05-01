@@ -1,6 +1,0 @@
-[submodule "pdfjs"]
-	path = pdfjs
-	url = git://github.com:mozilla/pdf.js.git
-[submodule "lib"]
-	path = lib
-	url = git://github.com:azu/pdf-markdown-annotator.git
