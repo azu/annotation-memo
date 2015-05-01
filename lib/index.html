@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
+    <link href="css/index.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css">
+    <script src="node_modules/nw-normalize-menu/nw-normalize-menu.js"></script>
+</head>
+<body>
+<script>
+    global.Element = Element;
+    global.document = window.document;
+    global.navigator = window.navigator;
+    global.Notification = window.Notification;
+    global.getComputedStyle = window.getComputedStyle;
+    global.localStorage = window.localStorage;
+    global.XMLHttpRequest = window.XMLHttpRequest;
+
+    require("babel/register")();
+
+    if (!global.alreadyShowWindow) {
+        global.alreadyShowWindow = true;
+        var script = document.createElement("script");
+        script.src = "./node_modules/node-webkit-winstate/index.js";
+        document.body.appendChild(script);
+        if (process.env.NODE_ENV !== 'production') {
+            require('nw.gui').Window.get().showDevTools();
+        }
+    }
+    window.addEventListener("load", function () {
+        require("./lib/index")();
+    });
+</script>
+</body>
+</html>

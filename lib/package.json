@@ -1,0 +1,46 @@
+{
+  "name": "pdf-markdown-annotator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azu/pdf-markdown-annotator.git"
+  },
+  "author": "azu",
+  "email": "azuciao@gmail.com",
+  "homepage": "https://github.com/azu/pdf-markdown-annotator",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/azu/pdf-markdown-annotator/issues"
+  },
+  "version": "1.0.5",
+  "description": "pdf annotator + markdown editor",
+  "main": "index.html",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "browserify -s bootstrap -t babelify lib/index.js -o build.js",
+    "dist": "nwbuild -p 'win,osx,linux32,linux64' ./ -o ./build"
+  },
+  "keywords": [
+    "markdown",
+    "pdf",
+    "annotation"
+  ],
+  "dependencies": {
+    "codemirror": "^5.2.0",
+    "font-awesome": "^4.3.0",
+    "material-flux": "^1.2.0",
+    "node-webkit-winstate": "^1.1.0",
+    "nw-normalize-menu": "^1.0.2",
+    "pdfjs-dist": "^1.1.86",
+    "react": "^0.13.2",
+    "react-code-mirror": "^3.0.4",
+    "react-remarkable": "^1.1.1"
+  },
+  "devDependencies": {
+    "babel": "^5.1.13",
+    "babelify": "^6.0.2",
+    "browserify": "^9.0.8",
+    "node-webkit-builder": "^1.0.11"
+  }
+}
