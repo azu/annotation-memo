@@ -4,6 +4,8 @@ declare parentDir=$(cd $(dirname $(cd $(dirname $0);pwd));pwd)
 # pull from repository
 git subtree pull --prefix=lib https://github.com/azu/pdf-markdown-annotator.git master --squash
 git subtree pull --prefix=pdfjs https://github.com/mozilla/pdf.js.git master --squash
+rm ${parentDir}/lib/.gitmodules
+rm ${parentDir}/pdfjs/.gitmodules
 # build js/css
 cd ${parentDir}/lib
 npm install && npm run build
