@@ -1,0 +1,12 @@
+#!/bin/bash
+
+declare parentDir=$(cd $(dirname $(cd $(dirname $0);pwd));pwd)
+cd ${parentDir}/lib
+npm install && npm run build
+mkdir -p ../resources
+cp build.js ../resources
+cp css/index.css ../resources
+cp css/index.css.map ../resources
+cp node_modules/codemirror/lib/codemirror.css ../resources
+cp -r node_modules/font-awesome/ ../resources/font-awesome
+cd -
