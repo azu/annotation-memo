@@ -12,9 +12,9 @@ rm -rf ${parentDir}/pdfjs/test/ttx/fonttools-code
 cd ${parentDir}/lib
 npm install && npm run build
 mkdir -p ../resources
-cp build.js ../resources
-cp css/index.css ../resources
-cp css/index.css.map ../resources
-cp node_modules/codemirror/lib/codemirror.css ../resources
-cp -r node_modules/font-awesome/ ../resources/font-awesome
+cp -f dist/build.js ../resources
+cp -f css/index.css ../resources
+cp -f css/index.css.map ../resources
+cp -f node_modules/codemirror/lib/codemirror.css ../resources
+cp -f -r node_modules/font-awesome/ ../resources/font-awesome
 cd -

@@ -108,9 +108,13 @@ module.exports = function bootstrap() {
 
     var pdfURL = _ref.pdfURL;
     var markdownURL = _ref.markdownURL;
+    var viewerPath = _ref.viewerPath;
 
     if (pdfURL) {
         context.PDFAction.load(pdfURL);
+    }
+    if (viewerPath) {
+        context.PDFAction.changeViewerPath(viewerPath);
     }
     if (markdownURL) {
         context.editorAction.openFile(markdownURL);
@@ -289,7 +293,8 @@ var _Action2 = require("material-flux");
 // LICENSE : MIT
 "use strict";
 var keys = {
-    loadURL: Symbol("loadURL")
+    loadURL: Symbol("loadURL"),
+    changeViewerPath: Symbol("changeViewerPath")
 };
 exports.keys = keys;
 
@@ -308,6 +313,11 @@ var PDFAction = (function (_Action) {
         key: "load",
         value: function load(url) {
             this.dispatch(keys.loadURL, url);
+        }
+    }, {
+        key: "changeViewerPath",
+        value: function changeViewerPath(filePath) {
+            this.dispatch(keys.changeViewerPath, filePath);
         }
     }]);
 
@@ -653,7 +663,6 @@ exports["default"] = MarkdownToolbar;
 module.exports = exports["default"];
 
 },{"path":17,"react":257}],8:[function(require,module,exports){
-(function (__dirname){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -670,7 +679,6 @@ var _inherits = function (subClass, superClass) { if (typeof superClass !== "fun
 "use strict";
 var React = require("react");
 var path = require("path");
-var viewerHTML = path.join(__dirname, "..", "..", "pdfjs/web/viewer.html");
 
 var PDFViewer = (function (_React$Component) {
     function PDFViewer() {
@@ -699,6 +707,7 @@ var PDFViewer = (function (_React$Component) {
         value: function render() {
             var pdfURL = this.props.pdfURL;
             var filePath = this.props.context.editorStore.getFilePath();
+            var viewerPath = this.props.context.PDFStore.getViewerPath();
             var query = "";
             if (pdfURL && filePath) {
                 var dirPath = path.dirname(filePath);
@@ -706,7 +715,7 @@ var PDFViewer = (function (_React$Component) {
             } else if (pdfURL) {
                 query = "?file=" + pdfURL;
             }
-            return React.createElement("iframe", { className: "PDFViewer", src: viewerHTML + query });
+            return React.createElement("iframe", { className: "PDFViewer", src: viewerPath + query });
         }
     }]);
 
@@ -719,7 +728,6 @@ module.exports = exports["default"];
 //this.iframe = React.findDOMNode(this);
 //this.iframe.addEventListener("load", this._onPDFLoad.bind(this));
 
-}).call(this,"/lib/components")
 },{"path":17,"react":257}],9:[function(require,module,exports){
 // LICENSE : MIT
 "use strict";
@@ -939,6 +947,7 @@ exports["default"] = EditorStore;
 module.exports = exports["default"];
 
 },{"../../package.json":258,"../actions/EditorAction":3,"fs":13,"material-flux":32}],11:[function(require,module,exports){
+(function (__dirname){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -964,15 +973,19 @@ var _keys = require("../actions/PDFAction");
 // LICENSE : MIT
 "use strict";
 
+var path = require("path");
+
 var EditorStore = (function (_Store) {
     function EditorStore(context) {
         _classCallCheck(this, EditorStore);
 
         _get(Object.getPrototypeOf(EditorStore.prototype), "constructor", this).call(this, context);
         this.state = {
-            URL: ""
+            URL: "",
+            viewerPath: path.join(__dirname, "..", "..", "pdfjs/web/viewer.html")
         };
         this.register(_keys.keys.loadURL, this.onLoadURL);
+        this.register(_keys.keys.changeViewerPath, this.onChangeViewerPath);
 
         // initial load
         var filePath = localStorage.getItem("pdfFile-URL");
@@ -994,6 +1007,18 @@ var EditorStore = (function (_Store) {
             return this.state.URL;
         }
     }, {
+        key: "getViewerPath",
+        value: function getViewerPath() {
+            return this.state.viewerPath;
+        }
+    }, {
+        key: "onChangeViewerPath",
+        value: function onChangeViewerPath(filePath) {
+            this.setStae({
+                viewerPath: filePath
+            });
+        }
+    }, {
         key: "onLoadURL",
         value: function onLoadURL(URL) {
             if (URL == null) {
@@ -1011,7 +1036,8 @@ var EditorStore = (function (_Store) {
 exports["default"] = EditorStore;
 module.exports = exports["default"];
 
-},{"../actions/PDFAction":4,"material-flux":32}],12:[function(require,module,exports){
+}).call(this,"/lib/stores")
+},{"../actions/PDFAction":4,"material-flux":32,"path":17}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45635,7 +45661,7 @@ module.exports={
     "test": "test"
   },
   "scripts": {
-    "build": "browserify -s bootstrap -t babelify lib/index.js -o build.js",
+    "build": "browserify -s bootstrap -t babelify lib/index.js -o dist/build.js",
     "dist": "nwbuild -p 'win,osx,linux32,linux64' ./ -o ./build"
   },
   "keywords": [
