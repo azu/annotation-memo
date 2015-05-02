@@ -1,5 +1,8 @@
 # ECMAScript 5 Specメモ
 
+[azu/annotation-memo](https://github.com/azu/annotation-memo/ "azu/annotation-memo")にソースがあります。
+(間違ってたらPull RequestやIssueとかお願いします)
+
 参考文献: [【完全日本語訳＋解説】ECMA-262 Edition 5.1を読む](http://ecma262.info/ "【完全日本語訳＋解説】ECMA-262 Edition 5.1を読む")
 
 ## [Page 15](./Ecma-262_5.1.pdf#page=15)
