@@ -469,8 +469,6 @@ var MarkdownPreview = (function (_React$Component) {
     _createClass(MarkdownPreview, [{
         key: "onClick",
         value: function onClick(event) {
-            event.stopPropagation();
-            event.preventDefault();
             var aTag = event.target;
             if (aTag.nodeName !== "A") {
                 return;
@@ -478,6 +476,8 @@ var MarkdownPreview = (function (_React$Component) {
             var href = aTag.getAttribute("href");
             if (/\.pdf/.test(href)) {
                 this.props.context.PDFAction.load(href);
+                event.stopPropagation();
+                event.preventDefault();
             }
         }
     }, {
@@ -45654,7 +45654,7 @@ module.exports={
   "bugs": {
     "url": "https://github.com/azu/pdf-markdown-annotator/issues"
   },
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "pdf annotator + markdown editor",
   "main": "index.html",
   "directories": {
