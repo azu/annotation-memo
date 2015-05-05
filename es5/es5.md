@@ -218,8 +218,6 @@ ES5から`/ /` は常に新しい正規表現オブジェクトを作るよう�
 [正規表現リテラルのes3からes5の間での変化 - ぶれすとつーる](http://nazomikan.hateblo.jp/entry/2014/03/12/020734 "正規表現リテラルのes3からes5の間での変化 - ぶれすとつーる")
 
 
-
-
 ## [Page 37](./Ecma-262_5.1.pdf#page=37)
 > An  implementation  may extend  the  regular  expression  constructor's  grammar,
 
@@ -398,6 +396,8 @@ NaNの場合どうなるかは書く演算子のところに書いてある。
 (関数, 戻り値, 関数の引数) みたいな感じだけど
 
 (type, value, args)
+
+=> 8.9 The Completion Specification Type に書いてある
 
 ## [Page 113](Ecma-262_5.1.pdf#page=113&zoom=auto,-13,375)
 > NOTEThe processes for initiating the evaluation of a Programand for dealing with the result of such an evaluation are defined by an ECMAScript implementation and not by this specification
