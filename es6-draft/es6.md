@@ -146,6 +146,8 @@ Well-Known Symbolsみたいな感じで、ビルトインオブジェクト版�
 
 ECMAScriptの仕様書型を定義してて、ステートメントをとかを評価してる時に出てくる、Record。
 
+**Completion Record**という名前
+
 ![completion record fields](http://monosnap.com/image/hZLQ7kMfeTMHuSch1hVunyFDTfFaOP.png)
 
 `[[type]]`がnormalだと正常に終わって、throwだったら例外を投げる終わり方。
@@ -172,7 +174,7 @@ abrupt completion(中途完了)という用語は`[[type]]`の値が**normal以�
 ReturnIfAbrupt(argument). 
 
 1. argumentがabrupt completionならば、return arguments.
-2. else if `arguments.[[value]]`を返す
+2. else if `argument.[[value]]`を返す
 
 abrupt completionはメッチャ参照されてる用語なのに、定義がさらっと書きすぎてる。
 
@@ -188,3 +190,234 @@ abrupt completionはメッチャ参照されてる用語なのに、定義がさ
 `base`の値はundefined,Object,Boolean,Symbol,Number と Envrioment Recordが可能
 
 Super Referenceの時は`base`がEnvrioment Recordにはならない。(代わりに`thisValue`をSuper Referenceが持っている。
+## [Page 53](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=53&zoom=auto,-101,586)
+> IsAccessorDescriptor ( Desc )
+
+Property Descriptor のAccessorが使えるかの判定をする。
+`Desc.[[Get]` や `Desc.[[Set]`が実装されているかが判定に使われている。
+
+## [Page 54](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=53&zoom=auto,-101,37)
+> FromPropertyDescriptor ( Desc )
+
+
+## [Page 54](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=53&zoom=auto,-101,37)
+> ToPropertyDescriptor ( Obj )
+
+これはObject <-> Property Descriptorを行うabstract operation.
+
+新しいObjectを作るのは`ObjectCreate(%ObjectPrototype%)`で作ったオブジェクトにPropertyDescriptorを設定していく感じ。
+abstrct operationでは基本的にWell-Known Intrinsic Objectsで操作を行っている。
+## [Page 55](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=55&zoom=auto,-101,624)
+> The Lexical Environment and Environment Record types are used to explain the behaviour of name resolution in nested functions and blocks. 
+
+Lexical Environmentは関数スコープでの名前解決とかに使われるよ。詳しくは8.1で
+## [Page 56](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=56&zoom=auto,-101,750)
+> ToPrimitive( input [, PreferredType] )
+
+Primitiveへの変換。
+Objectへの変換がES5とは違う。(`[[DefaultValue]]`を呼ぶという記述が無くなってる)
+
+- `PreferredType`がある場合は、OrdinaryToPrimitiveのhintにそれを使う
+- inputが`@@toPrimitive`を持ってるならそっちを使う
+
+という感じになってる。
+
+`OrdinaryToPrimitive(input, hint)`
+
+`OrdinaryToPrimitive`はhintがstringならtoString、numberならvalueOfを使うみたいなのを決めて呼ぶ仕組み
+
+
+
+## [Page 57](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=57&zoom=auto,-101,757)
+> When ToPrimitiveis  called  with  no  hint,  then  it generally behaves  as  if  the  hint were  Number.  However, objects may over-ride this behaviour by defining a @@toPrimitive method. Of the objects defined in this specification onlyDate objects(see 20.3.4.45)and Symbol objects (see 19.4.3.4) over-ride the default ToPrimitive behaviour.Date objects treat no hintas if the hint were String
+
+デフォルトだと大体Numberになるけど、オブジェクトは`@@toPrimitive`をoverwriteしてたらそっちが使われるので、例えばDateオブジェクトはhintなしでもstringになって、toStringになるという話。
+
+参考: ES5以下の話
+
+- [valueOfとtoStringとToPrimitive - os0x.blog](http://os0x.hatenablog.com/entry/20100916/1284650917 "valueOfとtoStringとToPrimitive - os0x.blog")
+## [Page 59](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=59&zoom=auto,-101,582)
+> Runtime Semantics: MV’s
+
+MVとは "mathematical value (MV)"
+## [Page 63](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=63&zoom=auto,-101,751)
+> Throw a TypeErrorexception.
+
+SymbolはToStringすると例外を投げる?
+
+`Symbol("desc").toString()`は例外を投げない。
+// Symbol("desc") という文字列を返す
+
+別途Symbol#toStringの定義があって`SymbolDescriptiveString`に文字列で変換されるだけなので、ToStringとは別のアルゴリズムを辿る。
+
+一方、`Symbol("desc") + ""` は例外を投げる => `ToString(symbol)`を呼ぶため。
+
+これは
+
+```js
+var s = Symbol("ooo");
+var newSymbol = s + "name";
+```
+
+みたいのを防止するための仕組みと理解。
+つまり暗黙的な変換に頼ったものをできるだけ排除している。
+
+
+> If x is an object, x + '' performs ToString(ToPrimitive(x, no hint)), whereas String(x) performs ToString(ToPrimitive(x, hint String)). So both expressions are not always interchangeable.
+
+
+- ["types & grammar": explain Symbol coercion in ch4 · Issue #274 · getify/You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS/issues/274)
+- [String(symbol)](https://esdiscuss.org/topic/string-symbol#content-11)
+
+
+## [Page 65](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=65&zoom=auto,-101,664)
+> IsArray ( argument )
+
+`IsArray` は Array exotic オブジェクトなら trueを返す。
+また、Proxy exoticオブジェクトでそのオブジェクトの`[[ProxyTraget]]`がArrayであってもtrueを返す。
+
+## [Page 67](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=67&zoom=auto,-101,832)
+> SameValueZero(x, y)
+
+
+## [Page 69](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=69&zoom=auto,-101,564)
+> GetV (V, P)
+
+primitive?
+## [Page 71](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=71&zoom=auto,-101,349)
+> HasProperty
+
+prototype辿る版のHasOwnProperty 
+## [Page 72](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=71&zoom=auto,-101,45)
+> Call(F, V, [argumentsList])
+
+`[[Call]]` のやつ
+
+FはFunction object
+VはValue
+argumentsListはargs
+
+## [Page 72](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=72&zoom=auto,-101,679)
+> Construct (F, [argumentsList], [newTarget])
+
+こっちは`[[Construct]]`の実体。
+
+ES5だと[Page 114](http://azu.github.io/annotation-memo/es5/ "Page 114") で書いてたように、通常の関数呼び出しはCall、newでの呼び出しがConstructになる。
+
+
+## [Page 72](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=72&zoom=auto,-101,566)
+> NOTEIf newTargetis not passed, this operation is equivalent to: new F(...argumentsList)
+
+`new F()`は代入されてないので、newTargetが存在しない。
+## [Page 74](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=74&zoom=auto,-101,788)
+> OrdinaryHasInstance (C, O)
+
+prototypeをたどって、CはOのインスタンスなのかを判定する。
+instanceofみたいな感じだけど
+
+## [Page 74](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=74&zoom=auto,-101,603)
+> SpeciesConstructor ( O, defaultConstructor )
+
+`@@species` はConstuctorが入るとこみたいな。
+サブクラスで`Symbol.species`を定義しておくと、instanceofの判定でそこが使われる?
+
+- [Classes in ECMAScript 6 (final semantics)](http://www.2ality.com/2015/02/es6-classes-final.html "Classes in ECMAScript 6 (final semantics)")
+
+## [Page 66](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=66&zoom=auto,-101,393)
+> SameValue(x, y)
+
+`Object.is( value1, value2)`がこれそのままなので、ユーザランドで使える。
+
+
+## [Page 77](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=77&zoom=auto,-101,661)
+> Executable Code and Execution Contexts
+
+
+## [Page 78](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=77&zoom=auto,-101,73)
+> A module environmentis a Lexical Environment that contains the bindings for the top level declarations of a Module.  It  also  contains  the  bindings  that  are  explicitly  imported  by  the Module.  The  outer  environment  of  a module environment is a global environment
+
+ES6ではmodule envが追加された。
+このLexical EnvにはModuleの宣言のbindingsが定義されている。
+bindingとはどのmodule**から**importされてるか。
+
+module env -> global env
+## [Page 79](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=79&zoom=auto,-101,732)
+> HasSuperBinding()
+
+`super`についてのbindingを持ってるかが追加
+
+
+## [Page 79](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=79&zoom=auto,-101,732)
+> WithBaseObject()
+
+`with` 専用のものが追加。
+
+_Declarative Environment Records_では、`WithBaseObject()`は常に`undefiened`を返す。
+
+逆にObject Environment Records、つまりwith専用のenv recordsではtrueを返すことがある。
+
+## [Page 81](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=81&zoom=auto,-101,442)
+> Object Environment Records
+
+
+## [Page 83](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=83&zoom=auto,-101,371)
+> 8.1.1.2.10 WithBaseObject()
+
+`withEnvironment`というフラグを見てtrueかfalseを返す。
+
+> 13.11.7 Runtime Semantics: Evaluation
+
+`withEnvironment`をtrueにしてくれるのはwith構文のアルゴリズムで定義されている。つまり`with()`を使うと、新しいObject Environmentが作られて、Object Environment Recordsの`withEnvironment`がtrueに変更される。
+
+
+## [Page 84](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=84&zoom=auto,-101,824)
+> [[HomeObject]]
+
+Function Environment Recordsは`[[HomeObject]]`というフィールドを持っていて、これは`super`プロパティが指す先(つまりParent?)になる。
+
+ArrowFunctionはこれがない。
+
+## [Page 91](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=91&zoom=auto,-101,844)
+> 8.1.1.5 Module Environment Records
+
+Module Enviroment Recordはdeclarative Environment Recordの一種。
++ immutable import  bindingsを記憶するRecordを持ってる
+
+## [Page 91](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=91&zoom=auto,-101,495)
+> NOTEBecause a Moduleis always strict mode code, calls to GetBindingValue should always pass trueasthe value ofS.
+
+Moduleは常にstrict modeである。
+## [Page 91](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=91&zoom=auto,-101,370)
+> The concrete Environment Record method DeleteBinding for moduleEnvironment Records refuses to delete bindings.
+
+Moduleは immutableではあるけど、bindingの削除はできない。
+
+## [Page 92](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=92&zoom=auto,-101,837)
+> 8.1.1.5.4 GetThisBinding
+
+> 8.1.1.5.3 HasThisBinding()
+
+常にtrueを返す
+
+> > 8.1.1.5.4 GetThisBinding()
+常にundefinedを返す
+
+- [Babelで top level this が undefinedになって困った件 - console.lealog();](http://lealog.hateblo.jp/entry/2015/04/27/203147 "Babelで top level this が undefinedになって困った件 - console.lealog();")
+- https://twitter.com/azu_re/status/592995278715650048
+
+BabelはコードをModuleとして扱うという前提があるので、Moduleのtop levelの8.1.1.5.4 GetThisBindingがundefinedを返すとなり仕様
+
+## [Page 93](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=93&zoom=auto,-101,298)
+> NewModuleEnvironment(E)
+
+呼び出す時は`NewModuleEnvironment(realm.[[globalEnv]]`しかないので、module envのouterはglobalとなる。
+
+> 8.3.2 GetThisEnvironment ( )
+
+でModule Envの`HasThisBinding()`はtrueを返すので、module envの`GetThisBinding()`を参照する。
+`GetThisBinding()`は常にundefinedを返すので、moduleのtop levelにある`this`はundefinedを返すといえる。
+
+
+まとめ:
+
+- [ES6 moduleのtop levelにある`this`の値は何になるのか? | Web Scratch](http://efcl.info/2015/05/06/this-is-es6-module/ "ES6 moduleのtop levelにある`this`の値は何になるのか? | Web Scratch")
