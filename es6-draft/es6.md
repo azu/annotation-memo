@@ -136,6 +136,22 @@ Well-Known Symbolsみたいな感じで、ビルトインオブジェクト版�
 
 本質的な名前が`%`
 
+要は[especially/intrinsics.js at master · domenic/especially](https://github.com/domenic/especially/blob/master/intrinsics.js "especially/intrinsics.js at master · domenic/especially")を見る感じ
+
+```
+exports["%Object%"] = Object;
+exports["%ObjectPrototype%"] = Object.prototype;
+exports["%ObjProto_toString%"] = Object.prototype.toString;
+exports["%Function%"] = Function;
+exports["%FunctionPrototype%"] = Function.prototype;
+exports["%Array%"] = Array;
+exports["%ArrayPrototype%"] = Array.prototype;
+exports["%String"] = String;
+exports["%StringPrototype%"] = String.prototype;
+exports["%Boolean%"] = Boolean;
+exports["%BooleanPrototype%"] = Boolean.prototype;
+```
+
 ## [Page 50](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=49&zoom=auto,-101,259)
 > The List and Record Specification Type6.2.1
 
@@ -421,3 +437,335 @@ BabelはコードをModuleとして扱うという前提があるので、Module
 まとめ:
 
 - [ES6 moduleのtop levelにある`this`の値は何になるのか? | Web Scratch](http://efcl.info/2015/05/06/this-is-es6-module/ "ES6 moduleのtop levelにある`this`の値は何になるのか? | Web Scratch")
+
+
+## [Page 94](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=94&zoom=auto,-101,842)
+> 8.2CodeRealms
+
+コードは評価される前にRealmに関連付けられる。
+Realmは、その関数がどのコンテキストで実行されてるのかを表現するために使われたりする感じ 
+
+Realmはintrinsic objectsで構成される。
+(  intrinsic は Intrinsic Name : `%Array%` みたいなところででてきた )
+
+Realm Record
+
+- `[[intrinsic]]`
+- `[[globalThis]]`
+- `[[globalEnv]]`
+- `[[templateMap]]`
+
+を持っている。
+
+
+## [Page 94](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=93&zoom=auto,-101,117)
+> [[templateMap]]
+
+Template objectは`[[templateMap]]`によって正規化されたもの?
+
+
+## [Page 95](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=95&zoom=auto,-101,603)
+> Execution Contexts
+
+実行コンテキストの話。
+コードは実行コンテキストをスタック的にもっていて、pushしたりpopしてる。
+つまり、この論理的なスタックの一番上にあるのが現在の実行コンテキストになる。
+
+で、実行コンテキストはどんな状態を保存していたりしているかについて。
+
+
+## [Page 96](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=95&zoom=auto,-101,28)
+> State Components for All Execution Contexts
+
+実行コンテキストが持つ状態要素
+
+- code evalution state
+- Function
+- Realm
+
+先ほど書いてたように実行コンテキストがRealmを持っている。
+
+ES5だと`ThisBinding`という状態要素が存在していて、
+これによりThisの値を見たりしていたが、　ES6ではEnviroment Recordに定義された`HasThisBinding()`をみてチェーンしていくので実行コンテキストが`this`の値を持つことはない。
+
+これは、Arrow Functionなど`this`を持たないやつが存在しているからだと思う。
+
+また現在の実行コンテキストの状態要素をそれぞれ
+
+- Function = active function object
+- Realm = current Realm
+
+と言ったりする。
+
+
+## [Page 96](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=96&zoom=auto,-101,532)
+> Additional State Componentsfor ECMAScript Code Execution Contexts
+
+Table 22—State Components for All Execution Contexts
+にLexicalEnvとかなくて、Table23でAdditionalになってるのはLexicalEnvを持たない実行コンテキストがあるのかな?
+
+このLexicalEnvironmentとVariableEvnromentはES5の時にもあって、その実行コンテキストに紐づく識別子(変数)とかをまとめるRecordを持ってる。
+
+
+
+## [Page 96](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=96&zoom=auto,-101,532)
+> Additional State Components for GeneratorExecution Contexts
+
+Generatorはさらに追加で`Generator`という状態要素を持っている
+## [Page 97](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=97&zoom=auto,-101,781)
+> GetThisEnvironment ( )
+
+ES5だと実行コンテキストの`ThisValue`を見るだけだったけど、
+現在の実行コンテキストのLexicalEnvironmentのRecordをみて、そのRecordが`HasThisBinding()`がtrueを返すなら`GetThisBinding()`でthisの値が撮れるという感じになってる。
+
+これによりそれぞれのLexicalEnvironmentであるmodule Environment Records特有の`this`の解決方法などが定義できるような感じになった。
+
+
+## [Page 98](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=97&zoom=auto,-101,111)
+> Jobs and Job Queues
+
+
+## [Page 98](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=98&zoom=auto,-101,794)
+> Execution of a Job can be initiated only when there is no running execution context and the execution context stack  is  empty.  
+
+Jobは実行コンテキストのスタック
+
+## [Page 98](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=98&zoom=auto,-101,655)
+> PendingJob Record Fields
+
+PendingJobというのがJobの抽象的なオブジェクト
+
+- `[[Job]]` Jobの名前
+- `[[Arguments]]`
+- `[[Realm]]`
+- `[[HostDefined]]` - 追加情報
+
+このPendingJobを貯めるところがJob Queue
+
+
+## [Page 98](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=98&zoom=auto,-101,655)
+> Required Job Queues
+
+Job Queues Recordのfiledは
+
+- ScriptJobs - ECMAScritp _Script_ や _Module_ のソーステキストが入ってる
+- PromiseJobs - Promise
+
+の2種類
+
+Queueから一番うえを取り出して使っていく。
+FIFO order.
+
+
+## [Page 98](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=98&zoom=auto,-101,291)
+> EnqueueJob (queueName, job, arguments)8.4.1
+
+PendingJobの追加
+
+
+
+## [Page 99](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=99&zoom=auto,-101,271)
+> ECMAScript Initialization() 
+
+Jobsやコードを実行するときの初期化処理について
+
+1. Realmを作る
+2. 実行コンテキストの作成
+3. 実行コンテキストの`Function`はnull
+4. 作ったRealmを実行コンテキストに設定
+5. 作った実行コンテキストを実行コンテキストのスタックへ追加
+6. ...
+
+
+
+## [Page 100](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=100&zoom=auto,-101,666)
+> Ordinary and Exotic Objects Behaviours 
+
+
+## [Page 100](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=100&zoom=auto,-101,666)
+> All ordinary objects have an internal slotcalled [[Prototype]].
+
+ordinary objectsは`[[Prototype]`という内部スロットをもっている。また`[[Exantensible]]`というスロットも持ってるよ。
+
+
+- `[[Prototype]]`
+- `[[Exantensible]]`
+
+## [Page 105](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=105&zoom=auto,-101,444)
+> OrdinaryCreateFromConstructor(constructor, intrinsicDefaultProto, internalSlotsList )
+
+ordinary objectsというのはこの抽象操作によって作成される。
+## [Page 106](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=106&zoom=auto,-101,568)
+> ECMAScript Function Objects
+
+Function objectというのはコードとLexicalEnvironmentをカプセル化したもので、ダイナミックなコード実行を行うためのもの。
+
+## [Page 107](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=107&zoom=auto,-101,725)
+> All ECMAScript function objects have the [[Call]] internal method defined here. 
+
+ECMAScript function objectsは`[[Call]]`を持つ
+
+
+## [Page 107](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=107&zoom=auto,-101,477)
+> [[Call]]( thisArgument,argumentsList)
+
+
+`.call(this, args)`
+## [Page 109](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=109&zoom=auto,-101,843)
+> Assert: If functionKindis present, its value is either "normal", "non-constructor"or"generator"
+
+Table 27 — Internal Slots of ECMAScript Function Objectsによると、ECMAScript Function Objectsは`[[FunctionKind]]`というスロットにFunctionの種類を持ってる。
+
+normal , calssConstructor, generator
+の3つ
+
+
+## [Page 114](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=114&zoom=auto,-101,654)
+> Built-in Function Objects
+
+
+## [Page 114](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=114&zoom=auto,-101,654)
+>  ECMAScript function objects  (9.2)  whose  behaviour  is  provided  using  ECMAScript  code  or  as  implementation  provided  exotic function objects whose behaviour is provided in some other manner.
+
+`Function.prototype`の事っぽい
+
+exotic function objectsとして提供される。
+exotic function objectsというのは9.2で定義されたordinary objectsの挙動に加えて、`[[Prototype]]`、`[[Extensible]]`、`[[Realm]]`を持っている。
+
+で、`[[Prototype]]`の初期値はきまっていて`%FunctionPrototype%`が初期値となる。
+
+## [Page 115](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=114&zoom=auto,-101,73)
+> The  [[Call]]  internal  method  forabuilt-in  functionobject Fis called  with parametersthisArgumentand argumentsList, a List of ECMAScript language values.The following steps are taken
+
+ ECMAScript function objectsも`[[Call]]`が定義されている。
+ 
+`9.2.1 [[Call]] ( thisArgument, argumentsList)` とはOrdinaryCall 的なのがなくなって、Realmについてが増えたりしてる所が違う。
+## [Page 115](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=115&zoom=auto,-101,270)
+> Bound Function Exotic Objects
+
+`bind`によって作られたFunctionもexotic objects。
+
+```js
+var boundFn = fn.bind(this);
+```
+
+みたいなので、Bound Function Exotic Objectsももちろん`[[Call]]`を持っているためCallable.
+
+
+
+## [Page 116](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=116&zoom=auto,-101,831)
+> 9.4.1.1 [[Call]]( thisArgument,argumentsList)
+> 9.4.1.2 [[Construct]](argumentsList, newTarget)
+
+こっちもまた異なる`[[Call]]`などを定義してる。
+つまり関数をbindしてできた関数は通常のものとはまた別のアルゴリズムで動いてるという事。
+
+- http://constellation.hatenablog.com/entry/20110113/1294846327
+
+## [Page 117](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=117&zoom=auto,-101,748)
+> Array exotic objects always have a non-configurable property named "length".
+
+Arrayのexotic objectsは`.length`というものをもっている。
+また`[[DefineOwnProperty]]`も独自にもっていて、オブジェクトとは`hasOwnProtperty`のアルゴリズムが異なる
+## [Page 118](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=118&zoom=auto,-101,681)
+> ArraySpeciesCreate(originalArray, length)
+
+`@@species`を参照してる。
+## [Page 119](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=119&zoom=auto,-101,441)
+> String Exotic Objects
+
+SringもArrayと似た感じでlengthや`[[DefineOwnProperty]]`の定義がある。
+また`[[StringData]]`というordinary objectsのスロットがある。
+
+
+## [Page 121](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=121&zoom=auto,-101,786)
+> Arguments Exotic Objects
+
+Arguments。
+`[[ParameterMap]]`というスロットにパラメータのバインディングをもっているが、このスロットは`Object.prototype.toString`でしか使われない。
+## [Page 125](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=125&zoom=auto,-101,771)
+> Integer Indexed Exotic Objects
+
+TypedArrayとか
+
+## [Page 128](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=128&zoom=auto,-101,786)
+> A module  namespace  objectis  an  exotic  object  that  exposes  the  bindings  exported  from  an  ECMAScript Module
+
+Moduleの名前空間について。
+
+## [Page 128](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=128&zoom=auto,-101,786)
+> [[Exports]]
+
+
+## [Page 128](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=128&zoom=auto,-101,786)
+> The list is ordered as if an Array of those string values had been sorted using Array.prototype.sortusing SortCompare as comparefn
+
+Internal Slotsof Module Namespace Exotic Objects
+Module名前空間の`[[Exports]]`はsortされている。
+
+## [Page 130](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=130&zoom=auto,-101,741)
+> ModuleNamespaceCreate (module, exports)
+
+Module Recordとexports(文字列の配列)を受け取る。
+exportsは`[[Exports]]`になる。
+## [Page 130](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=130&zoom=auto,-101,511)
+> 9.5ProxyObject Internal Methodsand Internal Slots
+
+
+## [Page 130](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=130&zoom=auto,-101,432)
+> very   proxy objects hasan internal   slotcalled   [[ProxyHandler]].   The   value   of [[ProxyHandler]] is anobject, called the proxy’s handler object, or null. Methods
+
+proxyオブジェクトは`[[ProxyHandler]]`というinternal slotを持っている。
+`[[ProxyHandler]].Call(proxy | null, args);`という感じで使う。
+
+
+
+## [Page 131](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=131&zoom=auto,-101,791)
+> A proxy’s handler object does not necessarily have  a  method  corresponding  to  every  essential  internal  method. 
+
+proxy handler objectは必ずしもそれぞれ内部メソッドと関連付けたメソッドを持っている必要はない。
+## [Page 131](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=131&zoom=auto,-101,590)
+> The [[ProxyHandler]] and [[ProxyTarget]] internal slots of a proxy object are always initialized when the object is created and typically may not be modified.
+
+`[ProxyHandler]]`と`[[ProxyTarget]]`は初期化したら変更はできなくて、revokedしかできないデザイン。
+revokeするとnullになる。
+
+
+## [Page 131](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=131&zoom=auto,-101,527)
+> Because proxy objects permit the implementation of internal methodsto be provided by arbitrary ECMAScript code, it is possible to define a proxy object whose handler methods violates the invariants defined in 6.1.7.3.
+
+
+内部的な不変性を崩してしまう可能性が出てくるから
+
+
+
+## [Page 136](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=136&zoom=auto,-101,429)
+> When the [[Delete]] internal method ofa Proxy exotic objectOis called with property keyPthe following steps are taken
+
+Proxyオブジェクトにdeleteをカマしたおき、。
+普通に`[[ProxyTraget]].[[Delete]]`を呼ぶだけ
+## [Page 138](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=137&zoom=auto,-101,24)
+> [[Call]](thisArgument, argumentsList) 9.5.13
+
+Proxyの基本的な流れ
+
+`[[Call]](thisArgument, argumentsList)｀ケース
+
+1. `[[ProxyHandler]]` is handler
+2. handlerをチェック
+3. `[[ProxyTarget]` is target
+4. `GetMethod(handler, "apply")`という感じで`handler`からメソッドを取り出す。この時**trap**という変数に入れる。
+5. `trap`のチェック
+6. `Call(trap, handler, <<target, thisArguments, argmentsList>>)` 呼ぶ
+
+
+
+
+
+
+
+
+
+
+
+
