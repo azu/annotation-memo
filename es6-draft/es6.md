@@ -461,7 +461,14 @@ Realm Record
 ## [Page 94](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=93&zoom=auto,-101,117)
 > [[templateMap]]
 
-Template objectは`[[templateMap]]`によって正規化されたもの?
+<del>Template objectは`[[templateMap]]`によって正規化されたもの?</del>
+
+2015-05-17追記
+
+(Symbolと[[templateMap]]はJSCだとWeakMapで実装されてる。)
+Template tagの第一引数に来るtemplate objectは一意なオブジェクトなので、realm recordに[[templateMap]]に保存して利用している。そのために`[[templateMap]]`という保存場所が仕様に定義されている。
+
+SymbolもSymbol.forで一意のものを取得できるので、同じような保存場所がグローバルに存在してる
 
 
 ## [Page 95](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=95&zoom=auto,-101,603)
@@ -759,13 +766,79 @@ Proxyの基本的な流れ
 6. `Call(trap, handler, <<target, thisArguments, argmentsList>>)` 呼ぶ
 
 
+## [Page 140](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=139&zoom=auto,-101,244)
+> Static Semantics:  
+
+噂通り、コードポイント的な解説が増えている。
+## [Page 140](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=140&zoom=auto,-101,680)
+> 10.2　Types of SourceCode
+
+ECMAScriptコードは4種類ある
+
+- Globalコード = ECMAScript _Script_として扱う
+- Evalコード = ECMAScript _Script_として扱う
+- Functionコード = パースに制約がある
+- Moduleコード = これはModuleBodyを提供する。モジュールが初期化されるときに実行される。
+## [Page 140](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=140&zoom=auto,-101,516)
+> Strict Mode Code
+
+ES6ではデフォルトがstrict modeとなるコードがある。
+strict modeとなるものを列挙すると
+
+- ディレクティププロローグで"use strict"したコード
+- Moduleコード
+- Class宣言、式
+- Evalコードで"use strict"
+- Functionコードで"use strict"
 
 
+## [Page 141](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=140&zoom=auto,-101,187)
+> ECMAScript code that is not strict mode code is called non-strict code
+
+strict modeではないコード non-strict という
+
+[tc39-notes/jan-29.md at master · rwaldron/tc39-notes](https://github.com/rwaldron/tc39-notes/blob/master/es6/2015-01/jan-29.md#const-in-sloppy-mode "tc39-notes/jan-29.md at master · rwaldron/tc39-notes")
 
 
+## [Page 141](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=140&zoom=auto,-101,39)
+> 10.2.2 Non-ECMAScript Functions
+
+そんな概念あるのか
+
+## [Page 141](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=141&zoom=auto,-101,641)
+> ECMAScript Language: Lexical Grammar
+
+InputElementRegExpOrTemplateTailを例にグラマーの解説。
+　
+## [Page 146](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=146&zoom=auto,-101,819)
+> Identifier Names
 
 
+変数名は\ UnicodeEscapeSequenceで表現されて、"$", or "_" または UTF16Encodingにマッチするものという感じなのか 
 
 
+## [Page 146](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=146&zoom=auto,-101,511)
+> Reserved Words
+
+ReservedWordとはKeyword、FutureReservedWord、NullLiteral、BooleanLiteral
+
+## [Page 147](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=147&zoom=auto,-101,522)
+> FutureReservedWord
+
+awaitとenumだけ(awaitはModuleの時だけ)
+## [Page 152](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=152&zoom=auto,-14,614)
+> It is a Syntax Error if the MV of HexDigits> 1114111.
+
+`u{HexDigits}` 
+
+`u{1114111}`までがセーフ
+
+## [Page 153](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=153&zoom=auto,-14,376)
+> String value (SV) 
 
 
+## [Page 155](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=155&zoom=auto,-14,640)
+> 11.8.6 Template LiteralLexical Components
+
+Template Literalの${}は
+TemplateHead、TemplateMiddle、TemplateTailからなる
