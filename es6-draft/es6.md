@@ -842,3 +842,274 @@ awaitとenumだけ(awaitはModuleの時だけ)
 
 Template Literalの${}は
 TemplateHead、TemplateMiddle、TemplateTailからなる
+## [Page 160](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=159&zoom=auto,-14,96)
+> 12 ECMAScript Language: Expressions
+
+ついにyieldきた
+
+## ES６で増えた文法表示
+
+- `[?in]`
+- `[+parameter]`
+- `[~parameter]`
+
+これらはいずれもただの短縮記号なので、別の形に展開できる
+
+
+## [Page 32](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=32&zoom=auto,-14,581)
+> Prefixing  a parameter  name  with “?”on  a  right-hand  side  nonterminal  reference makes  that  parameter value dependent upon the occurrence of the parameter name on the reference to the current production’s left-hand side symbol.
+
+
+`[?in]`の展開はES5でinを除くみたいなものが大量出てきたのを短縮するため
+
+```
+VariableDeclaration[In] :
+	BindingIdentifier Initializer[?In]
+
+=>
+
+VariableDeclaration : 				
+	BindingIdentifier Initializer
+VariableDeclaration_In : 	
+	BindingIdentifier Initializer_In
+```
+
+
+## [Page 32](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=32&zoom=auto,-14,500)
+> If  a  right-hand  side  alternative  is  prefixed  with “[+parameter]”that  alternative  is  only  available  if  the  named parameter was used in referencing the production’s nonterminal symbol
+
++ と ~は対になる感じ
+
+
++ は+がついてる右側のsymbolを追加したものを加える。
+
+```
+StatementList[Return] :
+[+Return] ReturnStatement
+ExpressionStatement
+
+=>
+
+StatementList :
+	ExpressionStatement
+StatementList_Return :
+	ReturnStatement
+ExpressionStatement
+```
+
+~ は~がついてる右側のsymbolを除いたものを作る
+
+
+```
+StatementList[Return] :
+[~Return] ReturnStatement
+ExpressionStatement
+
+=>
+
+StatementList :
+	ReturnStatement
+	ExpressionStatement
+StatementList_Return :
+	ExpressionStatement
+```
+
+話を戻して
+
+## [Page 160](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=159&zoom=auto,-13,31)
+> 12.1　Identifiers
+
+IdentifierRefernaceは次のように定義されている。
+
+```
+IdentifierReference[Yield] : 
+	Identifier
+	[~Yield] yield
+```
+
+これはつまりいかのように展開できる
+
+```
+IdentifierReference : 
+	Identifier
+	yield
+IdentifierReference_Yeild : 
+	Identifier
+```
+
+
+## [Page 164](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=164&zoom=auto,-13,757)
+> PrimaryExpression:  this
+
+`this`のステップは
+
+1. Return `ResolveThisBinding()`
+
+となるだけなので、thisの値は`ResolveThisBinding()`のアルゴリズムで決まっている。
+
+
+## [Page 165](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=165&zoom=auto,-13,604)
+> Elision
+
+Arrayの, Elision 末尾のこと
+
+
+## [Page 170](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=170&zoom=auto,-13,785)
+> Return ObjectCreate(%ObjectPrototype%).
+
+`{}`は`Object.create(Object.prototype)`と一緒
+## [Page 173](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=173&zoom=auto,-13,685)
+> 12.2.9.3 Runtime Semantics: GetTemplateObject( templateLiteral )
+
+`realm.[[templateMap]]`からtemplate objectを取る所
+## [Page 173](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=173&zoom=auto,-13,383)
+> 12.Perform SetIntegrityLevel(rawObj, "frozen").
+
+`raw`プロパティに入れるまでにオブジェクトをfreezeしてる
+## [Page 174](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=173&zoom=auto,-13,200)
+> Future editions of this specification may define additional non-enumerable properties of template objects.
+
+何だろ?
+
+
+## [Page 174](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=174&zoom=auto,-13,372)
+>  TV
+
+TV = Template Value
+## [Page 176](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=176&zoom=auto,-13,745)
+> 12.3Left-Hand-Side Expressions
+
+new.targetってそれだけを定義してるMetaPropertyというのが構文にいるのか
+
+## [Page 176](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=176&zoom=auto,-13,414)
+> ArgumentList
+
+`(ArgumentList[?Yield])`
+となっている、ArgmentListには`... AssigmentExpression`というspreadがある
+
+## [Page 182](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=182&zoom=auto,-13,728)
+> SuperProperty:super.IdentifierName
+
+実態は`MakeSuperPropertyReference(propertyKey, strict)`になる
+## [Page 182](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=182&zoom=auto,-13,571)
+> Runtime Semantics: GetSuperConstructor ( )
+
+super(args)で使う
+
+## [Page 184](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=184&zoom=auto,-13,652)
+> 12.3.8 Meta Properties
+
+`new.target`は`GetNewTarget()`の内部メソッドを呼ぶだけ
+
+## [Page 185](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=185&zoom=auto,-13,458)
+> Unary Operators
+
+operator + Expressionな感じ
+## [Page 186](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=186&zoom=auto,-14,476)
+> 12.5.4.1 Static Semantics:  Early Errors1
+
+```
+delete ((foo))
+```
+がエラーになるように読めるんだけどどうなんだろ?
+
+- https://twitter.com/azu_re/status/601946554765811713
+
+
+## [Page 186](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=186&zoom=auto,-14,393)
+> Runtime Semantics: Evaluation
+
+delete演算子のアルゴリズム思ったより長い
+
+## [Page 187](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=186&zoom=auto,-14,15)
+> Let deleteStatusbebaseObj.[[Delete]](GetReferencedName(ref)).
+
+strict modeだとconfigurable:false だとここででfalseが帰ってきてTypeErrorにが次で投げられるのかな?
+
+## [Page 187](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=187&zoom=auto,-14,622)
+> voidUnaryExpression
+
+```
+void a
+```
+
+aの値は使わないけど、副作用のためaを評価する
+
+## [Page 187](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=187&zoom=auto,-14,424)
+> 12.5.6
+
+typeof演算子はまず、その変数が解決できるかをチェックしてできなかったら`"undefined"`を返す。
+
+## [Page 188](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=187&zoom=auto,-14,74)
+> Table 35—typeof Operator Results
+
+後は、Table35にしたがった値を返す。
+ES6では`"symbol"`が追加された。
+またNullは継続して`"object"`を返す。
+## [Page 188](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=188&zoom=auto,-14,757)
+> Object (non-standard exotic and does not implement [[Call]])
+
+Object (non-standard exotic and does not implement [[Call]])である場合はtypeofで返すものは実装依存だけど、”object”以外のどれかにしろってことらしい
+## [Page 191](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=191&zoom=auto,-14,605)
+> In C and C++, the remainder operator accepts only integral operands; in ECMAScript, it also accepts floating-point operands.
+
+ECMAScriptはfloatだから %できるよ
+## [Page 217](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=217&zoom=auto,-14,631)
+> eval("1;{}")
+
+```
+eval("1;{}") ;// 1
+```
+
+1 と {} という順でStatementListが評価されて、StatementListの値は最後の評価された値なので、{}は評価値がなく、1が最後の評価値となる
+## [Page 217](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=217&zoom=auto,-14,406)
+> 13.2.14 Runtime Semantics: BlockDeclarationInstantiation( code, env )
+
+_Block_ or _CodeBlock_ は新しいEnv Recordを作成して、そのスコープの変数や関数などをbindingしていく。
+
+```
+BlockDeclarationInstantiation (code ,env)
+```
+
+というのは上記のことを行う内部関数。
+
+
+## [Page 218](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=218&zoom=auto,-14,808)
+> 13.3.1 Let and Const Declarations
+
+`let`や`const`はLexical Envのスコープで定義され、実行される。
+
+## [Page 220](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=219&zoom=auto,-14,36)
+> 13.3.2 Variable Statement
+
+`ver`は実行コンテキストのVariableEnvriomentを対象にする。
+
+## [Page 221](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=221&zoom=auto,-14,463)
+> Destructuring Binding Patterns
+
+
+## [Page 229](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=229&zoom=auto,-14,691)
+> The ifStatement
+
+ifの定義
+## [Page 230](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=230&zoom=auto,-14,832)
+> Static Semantics: ContainsUndefinedContinueTarget
+
+```
+if( Expression ) Statement else Statement
+```
+
+`ContainsUndefinedBreakTarget`というアルゴリズムでは、ifとかの中にStatementをチェックする仕組みなのかな?
+
+else if という構文自体は定義されてなかったのでifとelseからelse ifができてる。
+
+## [Page 229](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=228&zoom=auto,-14,7)
+> Expression Statement
+
+ExpressionStatementの定義
+
+```
+[lookahead {{,function,class,let [}]Expression[In, ?Yield]
+```
+
+function classキーワードではスタートできない。
