@@ -1113,3 +1113,163 @@ ExpressionStatementの定義
 ```
 
 function classキーワードではスタートできない。
+## [Page 229](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=229&zoom=auto,-14,776)
+> 13.5Expression Statement
+
+Expression Statementはfunction,class,let以外から始まるExpression
+また、U+007B(LEFT  CURLY  BRACKET)から始まることもできない。
+
+
+## [Page 240](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=240&zoom=auto,-14,507)
+> undefinedis  passed  for environmentto  indicate  that  a  PutValue  operation  should  be  used  to  assign  the initialization  value. This  is  the  case  for varstatements  and  the  formal  parameter  lists  of  some  non-strict  functions  (see 9.2.12). In those cases a lexical binding is hoisted and preinitialized prior to evaluation of its initializer.
+
+
+## [Page 241](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=241&zoom=page-width,-14,366)
+> ForIn/OfHeadEvaluation( TDZnames, expr, iterationKind, labelSet
+
+TDZという名前が出てきてる
+
+
+
+## [Page 243](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=243&zoom=page-width,-14,623)
+> Static Semantics:  Early Errors
+
+continueにもearly errorがある
+## [Page 244](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=244&zoom=page-width,-14,307)
+> A returnstatement  causes  a  function  to  cease  execution  and  return  a  value  to  the  caller.  If Expressionis omitted, the return value is undefined. Otherwise, the return value is the value of Expression
+
+```
+return fn() 
+```
+
+の時に値を返す仕組み
+
+
+
+## [Page 247](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=247&zoom=page-width,-14,731)
+> CaseBlock:{}
+> 1.Return false
+
+
+switch `{ }` この部分がfalseを返すのか
+
+
+## [Page 250](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=250&zoom=page-width,-14,472)
+> CaseClause
+
+case Expression : StatementList
+
+のこと
+## [Page 253](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=253&zoom=page-width,-14,616)
+> A Statementmay  be  prefixed  by  a  label.  Labelled  statements  are  only  used  in  conjunction  with  labelled breakand continuestatements.  ECMAScript  has  no gotostatement. 
+
+breke labelとgoto
+## [Page 257](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=256&zoom=page-width,-14,26)
+> 13.14The throwStatement
+
+throw と try
+
+throwとは`Completion{[[type]]: throw, [[value]]: exprValue, [[target]]: empty}`というCompletionを返す処理のことをいう。
+Completion 型 は仕様型の一種
+
+## [Page 260](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=260&zoom=page-width,-14,398)
+> TryStatement : try Block Catch
+
+Blockの実行結果をみて、`B.[[type]]`がthrowとなっているなら、Catchの`C.[[vaue]]`にその値をいれてあげる。
+## [Page 261](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=261&zoom=page-width,-14,628)
+> The debuggerstatement
+
+debuggerステートメントは実装が定義したdebbugging actionを実行して、その結果をCompletion valueに入れる。
+## [Page 262](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=262&zoom=page-width,-14,579)
+> Directive Prologues and the Use Strict Directive
+
+ディレクティブプロローグ！
+"use strict"か'use strict'に限定されてる。
+## [Page 269](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=269&zoom=page-width,-14,832)
+> 14.2Arrow Function Definitions
+
+=>
+## [Page 269](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=269&zoom=page-width,-14,526)
+> Static Semantics:  Early Errors
+
+
+```
+var fn = (arg) => { var arg; }
+```
+
+はearly errorになる
+## [Page 270](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=270&zoom=page-width,-14,675)
+> Static Semantics:  Contains
+
+this, superが含まれているかどうかというアルゴリズムが定義されている。
+## [Page 273](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=273&zoom=page-width,-14,485)
+> get PropertyName
+
+method定義で `get name(){}`となって引数は必ずないけど、ここはearly errorではないんだ
+## [Page 275](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=275&zoom=page-width,-14,658)
+> 14.3.9 Runtime Semantics: PropertyDefinitionEvaluation
+
+With parametersobjectandenumerable.
+
+オブジェクトのプロパティ定義はenumerableを受け取る(trueだけど)
+## [Page 276](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=276&zoom=page-width,-14,794)
+> 14.4GeneratorFunction Definitions
+
+
+## [Page 276](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=276&zoom=page-width,-14,747)
+> yield [no LineTerminatorhere]AssignmentExpression[?In, Yield]
+
+yeildのright-handはassignmneexpression
+
+## [Page 276](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=276&zoom=page-width,-14,657)
+> It is a Syntax Error ifHasDirectSuper of GeneratorMethod is true
+
+Generator Methodがsuperを持ってるとearly error?
+
+`HasDirectSuper`が要
+
+## [Page 277](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=277&zoom=page-width,-14,667)
+> Static Semantics:  ComputedPropertyContains
+
+ComputedPropertyを含んでいるかの判定あるんだ
+## [Page 277](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=277&zoom=page-width,-14,633)
+> Static Semantics:  Contains
+
+super含んじゃだめだし、常にfalseを返してる。
+
+## [Page 277](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=277&zoom=page-width,-14,293)
+> HasDirectSuper
+
+Generator methodのparameter, bodyにsuperがあったらtrueを返す。
+これの結果を使ってearly errorを見つける
+## [Page 279](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=279&zoom=page-width,-14,363)
+> Runtime Semantics: Evaluation
+
+generator の実行ステップ
+## [Page 280](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=280&zoom=page-width,-14,639)
+> YieldExpression: yield
+
+yeildというのは
+
+ReturnGeneratorYield(CreateIterResultObject(value, false))
+
+を返すということをしてる。
+
+## [Page 280](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=280&zoom=page-width,-14,396)
+> NOTE:  Exceptions from the inner iterator throwmethod are propagated.Normal completions from an inner throwmethod are processed similarly to an inner next
+
+
+アルゴリズムのステップにNoteが入ってるのおかしくない?
+これって仕様バグなのかな http://t.co/MftImQzB7e
+
+doc版も同じ
+ここではステップにNOTEを多用してるしわざとっぽい
+## [Page 281](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=281&zoom=page-width,-14,564)
+> 14.5ClassDefinitions
+
+クラスの構文
+
+## [Page 282](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=282&zoom=page-width,-14,576)
+> ClassElement:staticMethodDefinitionIt is a Syntax Error if HasDirectSuper of MethodDefinitionistrue.It is a Syntax Error if PropNameof MethodDefinitionis"prototype"
+
+staticなのに、method definitionみたいにsuperとかprototypeをearly errorにするのは良いね
