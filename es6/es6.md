@@ -140,3 +140,169 @@ _NativeError_ について
 ## [Page 345](Ecma-262.pdf#page=345&zoom=page-width,-14,511)
 > Number.isSafeInteger (number)
 
+桁溢れてないかの判定が簡単にできる
+## [Page 361](Ecma-262.pdf#page=361&zoom=page-width,-9,842)
+> Date Number
+
+MakeTimeとか結構細かいのも定義されてる。
+
+## [Page 386](Ecma-262.pdf#page=386&zoom=page-width,-9,811)
+> Replacement Text Symbol SubstitutionsCode
+
+"string".replace(/(ing)/, `-$\``);
+
+ES6でもコメントと除算の判定みたいなパターンありそう。
+$`とか使ってるの見たことないけど
+
+Tempale Stringと$`で被る
+## [Page 392](Ecma-262.pdf#page=392&zoom=page-width,-9,515)
+> 21.1.5 tring Iterator Objects 
+
+Stringはiterableであるという話
+
+## [Page 414](Ecma-262.pdf#page=414&zoom=page-width,-9,424)
+> RegExp.prototype[ @@match ] (string 
+
+Symbol match
+## [Page 420](Ecma-262.pdf#page=420&zoom=page-width,-9,577)
+> 22Indexed Collections
+
+Array 
+## [Page 421](Ecma-262.pdf#page=421&zoom=page-width,-9,327)
+> 22.1.2.1 Array.from( items [ , mapfn [ , thisArg ] ])
+
+Array.fromはmapもできる
+
+## [Page 423](Ecma-262.pdf#page=423&zoom=page-width,-9,751)
+> 22.1.2.3 Array.of( ...items)
+
+Array.ofはarray likeをarrayにして返してくれる。
+ひらすたらwhileて回してarrayを返す
+
+## [Page 444](Ecma-262.pdf#page=444&zoom=page-width,-9,432)
+> 22.1.3.31  Array.prototype[ @@unscopables ]
+
+1 Perform CreateDataProperty(blackList, "copyWithin", true)
+
+まさかのベタ書き
+## [Page 446](Ecma-262.pdf#page=446&zoom=page-width,-9,458)
+> 22.2 TypedArrayObjects 
+
+TypedArray
+## [Page 469](Ecma-262.pdf#page=468&zoom=page-width,-9,163)
+> 23.1.5 Map Iterator Objects
+
+
+## [Page 469](Ecma-262.pdf#page=469&zoom=page-width,-9,524)
+> itemKind is "key+value"
+
+itemKindでkey+valueがある。
+この種類の場合はmap.iterator.next()で`CreateArrayFromList(«e.[[key]],e.[[value]]»)`を返す。
+
+つまり、言語レベルで `[key, value]` というものが存在してる。
+
+## [Page 470](Ecma-262.pdf#page=469&zoom=page-width,-9,123)
+> Table 50—Internal Slots of Map Iterator Instances
+
+`[[MapIterationKind]]` に "key", "value", "key+value" という3パターンがある。
+## [Page 475](Ecma-262.pdf#page=475&zoom=page-width,-9,821)
+> 23.3 WeakMap Objects
+
+実装者はキーを監視する機能は提供しなくて良い。
+observableではない。
+## [Page 489](Ecma-262.pdf#page=489&zoom=page-width,-10,289)
+> 24.3The JSON Object
+
+%JSON% intrinsic object これはECMA404で定義されてる
+## [Page 496](Ecma-262.pdf#page=495&zoom=page-width,-10,164)
+> 25 Control Abstraction Objects
+
+IterableとかIterator、IteratorResultとかのInterfaceを定義してる。(なんでいきなりinterfaceなんだろ?)
+
+あるオブジェクトは複数のinterfaceを実装してても良い
+
+## [Page 496](Ecma-262.pdf#page=496&zoom=page-width,-10,804)
+> An  interface is  a  set  of  property  keys  whose  associated values  match  a  specific  specification. 
+
+interfaceとはpropertyの集合を定義してもの
+
+## [Page 496](Ecma-262.pdf#page=496&zoom=page-width,-10,629)
+> Iterable Interface Required Properties
+
+`Iterable` interfaceは`@@iterator`を持ってるオブジェクト
+(`@@iterator`はiteratorオブジェクトを返す関数)
+
+
+## [Page 496](Ecma-262.pdf#page=496&zoom=page-width,-10,629)
+> Iterator Interface Required Properties
+
+`Iterator` interfaceは`next`、`return`、`throw`を持つオブジェクト
+
+
+## [Page 497](Ecma-262.pdf#page=497&zoom=page-width,-10,704)
+> IteratorResult Interface Properties
+
+`IteratorResult` interfaceは`done`と`value`を持つオブジェクト
+## [Page 498](Ecma-262.pdf#page=498&zoom=page-width,-9,214)
+> The GeneratorFunctionconstructor is  the  %GeneratorFunction% intrinsic.
+
+
+## [Page 499](Ecma-262.pdf#page=498&zoom=page-width,-9,44)
+> GeneratorFunction is designed to be subclassable
+
+Generator はサブクラス可能　
+## [Page 497](Ecma-262.pdf#page=497&zoom=page-width,-9,220)
+> Object.getPrototypeOf(Object.getPrototypeOf([][Symbol.iterator]()))
+
+`%IteratorPrototype%`を取る方法
+
+## [Page 500](Ecma-262.pdf#page=500&zoom=page-width,-9,772)
+> 25.2.4 GeneratorFunction Instances
+
+
+## [Page 500](Ecma-262.pdf#page=500&zoom=page-width,-9,772)
+> The value of the [[FunctionKind]] internal slot for all such instances is "generator"
+
+generatorのインスタンス=generator objectは"generator"という種類になる。
+
+
+## [Page 500](Ecma-262.pdf#page=500&zoom=page-width,-9,346)
+> A  Generator  object  is  an  instance  of  a  generatorfunction  and  conforms  to  both  the Iterator and Iterable interfaces
+
+GeneratorオブジェクトはIteratorとIterable interfaceを持つ。
+Generator objectはgenerator functionのインスタンス
+
+
+
+## [Page 501](Ecma-262.pdf#page=500&zoom=page-width,-9,46)
+> The  Generator  prototypeisan  ordinary  object.  It  is  not  a  Generator  instance  and  does  not  havea [[GeneratorState]] internal slot.
+
+ordinary objectはinternal slotを持ってない
+
+## [Page 501](Ecma-262.pdf#page=501&zoom=page-width,-9,740)
+> Let CbeCompletion{[[type]]: return, [[value]]: value, [[target]]: empty}
+
+`Generator.prototype.return ( value )`はCompletion型を渡してる
+## [Page 501](Ecma-262.pdf#page=501&zoom=page-width,-9,593)
+> Let CbeCompletion{[[type]]: throw, [[value]]: exception, [[target]]: empty}
+
+Generator.prototype.throw ( exception )は`type:throw`
+## [Page 501](Ecma-262.pdf#page=501&zoom=page-width,-9,400)
+> 25.3.2 Properties of Generator Instances
+
+Generator Instanceは以下のinternal slotを持つ
+
+- [[GeneratorState]]
+	- yieldによって"susupededYield"や"executing"などの状態を遷移して"completed"となる
+- [[GeneratorContext]]
+
+Generatorはexecution context stackからgeneratorContextをremoveしたり(complete)、pushしたりする(resume)
+## [Page 503](Ecma-262.pdf#page=503&zoom=page-width,-9,463)
+> GeneratorYield ( iterNextObj )
+
+yeildはGeneratorYield ( iterNextObj )を実行することで、[[GeneratorState]]を"suspendedYield"にしてくれる
+
+> Remove genContextfrom the execution context stack and restorethe execution context that is at the top of the execution context stack as the runningexecution context
+
+supendと同時にexecution context stackからgenCtxを取り除いている。=つまり処理されなくなってる。
+　
