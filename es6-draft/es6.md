@@ -1273,3 +1273,141 @@ doc版も同じ
 > ClassElement:staticMethodDefinitionIt is a Syntax Error if HasDirectSuper of MethodDefinitionistrue.It is a Syntax Error if PropNameof MethodDefinitionis"prototype"
 
 staticなのに、method definitionみたいにsuperとかprototypeをearly errorにするのは良いね
+## [Page 283](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=282&zoom=page-width,-9,8)
+> 14.5.4 Static Semantics:  Contains
+
+何か色々チェックしてる。
+ClassBody、CLassHeritage、ComputedPropertyContains 
+
+## [Page 285](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=285&zoom=page-width,-9,618)
+> Runtime Semantics: ClassDefinitionEvaluation
+
+```
+class  {
+
+}
+```
+
+の定義をつかさどるやつ
+## [Page 285](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=285&zoom=page-width,-9,486)
+> If superclasshas a [[FunctionKind]] internal slot whose value is "generator", throwa TypeErrorexception.
+
+Generatorはsuperにはなれない
+
+## [Page 285](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=285&zoom=page-width,-9,336)
+> 10.If constructoris empty, then 
+
+継承してる(ClassHeritageがある)classでconstructorが空の場合は
+
+> constructor(... args){ super(...args);}
+
+が自動的に定義される。
+
+そうじゃない時は`constrctor(){}`を使う
+
+
+## [Page 286](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=286&zoom=page-width,-9,720)
+> 23.If classNameis notundefined, then
+
+classNameが決まるのが結構ステップ的に後ろだ
+## [Page 287](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=287&zoom=page-width,-10,739)
+> 14.6Tail Position Calls
+
+末尾呼び出し最適化！！
+
+## [Page 287](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=287&zoom=page-width,-10,647)
+> If the source code matching nonterminalis not strict code, return false
+
+sInTailPosition(nonterminal)がstrict codeじゃない時はfalseってことはstrict modeじゃないと末尾最適化はできない感じなのかな
+evalあると困りそうだし
+## [Page 287](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=287&zoom=page-width,-10,554)
+> Tail  Position  calls  are  only  defined  in  strict  mode  code  because  of  a  common  non-standard  language extension (see 9.2.7) that enables  observation of the chain of caller contexts
+
+
+## [Page 287](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=287&zoom=page-width,-10,483)
+> nonterminalis a parsed grammar production that represent a specific range of source text. When the following algorithms compare nonterminalto other grammar symbols they are testing whether the same source text was matched by both symbols.
+
+
+## [Page 287](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=287&zoom=page-width,-10,396)
+> Statement Rules
+
+tail call適応できる構文定義
+## [Page 289](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=289&zoom=page-width,-10,641)
+> Expression Rules
+
+
+## [Page 289](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=289&zoom=page-width,-10,641)
+> A potential tail position call that is immediately followed by return GetValue of the call result is also a possible tail position call. Function calls cannot return reference values, so such a GetValue operation will always returns the same value as the actual function call result.
+
+常に同じ値を返す関数でないといけない。
+
+## [Page 291](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=291&zoom=page-width,-10,620)
+> Runtime Semantics: PrepareForTailCall ( )
+
+leftをstatopに積んで、実際によぶまでアクティブにしない
+
+## [Page 291](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=291&zoom=page-width,-10,620)
+> For example, a tail position call should only grow an implementation’s activation record stack  by the  amount that the size of the target function’s activation record exceeds the size of the calling function’s activation record. If thetarget function’s activation record is smaller, then the total size of the stack should decrease
+
+末尾呼び出し最適化はstackを小さくすることだって
+
+## [Page 291](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=291&zoom=page-width,-10,359)
+> 15ECMAScript Language: Scripts andModules
+
+モジュール!
+## [Page 292](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=292&zoom=page-width,-10,224)
+> 15.1.7With argument realm.
+
+Runtime Semantics: ScriptEvaluation
+
+`ScriptEvaluation(realm)`
+
+Let scriptCxt be a new ECMAScript code execution context.
+を作って、そこにrealmやvaribeleEnv、LexicalEnv等を設定していって、作ったscriptCxtをexecution context stackに追加する。
+
+`GlobalDeclarationInstantiation(scrip,evn)`の結果を使う。
+
+
+## [Page 294](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=294&zoom=page-width,-9,527)
+> The jobScriptEvaluationJob with parameter sourceTextparses, validates, and evaluates sourceTextas a Script
+
+パースして、バリデーションして、実行する。
+
+## [Page 295](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=295&zoom=page-width,-9,642)
+> Module Semantics
+
+複数のexport defaultがある場合もSyntax Errorとなる。　
+
+## [Page 299](ecma-262_6th_edition_final_draft_-04-14-15.pdf#page=299&zoom=page-width,-9,226)
+> AModuleRecord encapsulates structural information about the imports and exports of a single module. 
+
+module recordはそのモジュールに関するexportとimportの記録を持っている。
+
+Record Fieldは `[[Realm]]` を持ってる。
+
+追加で以下の様なものを持ってる
+
+- [[RequestedModules]]
+- [[ImportEntries]]
+- [[LocalExportEntries]]
+- [[IndirectExportEntries]]
+- [[StarExportEntries]]
+
+ImportEntriesはImportEntryの集合
+
+- [[ModuleRequest]]
+- [[ImportName]]
+- [[LocalName]]
+
+を持ってる。
+
+ModuleRequestはimportしたいモジュール
+
+![img](http://monosnap.com/image/cXrOEoNWXZ5ocfIus4QPF8vM6arLMJ.png)
+
+
+ExportEntriesはExportEntryの集合
+
+`export { x } from "mod"` という書き方も存在するので、ExportEntryはImportEntryと同じモノ + Export Nameがある
+
+![export](http://monosnap.com/image/EH2MXFPuLFwXfoTBoFTH7bE45tW7Iw.png)
