@@ -306,3 +306,160 @@ yeildはGeneratorYield ( iterNextObj )を実行することで、[[GeneratorStat
 
 supendと同時にexecution context stackからgenCtxを取り除いている。=つまり処理されなくなってる。
 　
+## [Page 503](Ecma-262.pdf#page=503&zoom=page-width,-14,401)
+> 25.4Promise Objects
+
+Promise
+
+pending -> fulfilled, rejefted
+
+pendingではないことを _settled_ と呼ぶ
+
+promiseがsettledとなったことを_resolved_とよび、そうでないことを_unresolved_と呼ぶ。
+
+unresolved == pending
+つまり、rejectでもあってもresolved。
+
+
+## [Page 504](Ecma-262.pdf#page=504&zoom=page-width,-14,715)
+> PromiseCapabilityRecords
+
+Promiseの情報はPromiseCapablity Record Fieldに入る。
+## [Page 504](Ecma-262.pdf#page=504&zoom=page-width,-14,436)
+> PromiseReaction Records
+
+thenした時にどうするかの情報を保持するRecord
+
+
+## [Page 505](Ecma-262.pdf#page=505&zoom=page-width,-14,764)
+> CreateResolvingFunctions( promise )
+
+CreateResolvingFunctionsが25.4.1.3.1Promise RejectFunctionsと25.4.1.3.2Promise Resolve Functionsを使って、
+Promiseに対してresolveとrejectの関数を追加する。
+
+resolveとrejectは[[AlreadyResolved]]を見て、挙動が違ったりする。
+
+
+## [Page 506](Ecma-262.pdf#page=505&zoom=page-width,-14,178)
+> FulfillPromise ( promise, value)
+
+resultとstateを埋めて、PromiseFulfillReactionsとPromiseRejectReactionsをundefinedにする。
+
+
+## [Page 506](Ecma-262.pdf#page=506&zoom=page-width,-14,797)
+> NewPromiseCapability( C )
+
+CはConstructorのC
+IsConstructor(C)でチェックする。
+
+- 新しいPromiseCapabilityRecordsを作る
+- excutorをGetCapabilitiesExecutorでで作る
+- exctutor.[[Capability]] = promiseCapability 
+- `Construct(C, «executor»)`を行う。
+
+> 7.3.13 Construct (F, [argumentsList], [newTarget])
+
+を見ると `C.[[Constructor]](executor)` を行うということになる。
+
+- `promise = C.[[Constructor]](executor)`
+	- この時にexturor.[[Capability]].[[Resolve]]とexturor.[[Capability]].[[Reject]]がcallableな値が代入されることを前提としてる
+- promiseCapability.[[Promise]] = promise
+- return promiseCapability 
+
+という感じでNewPromiseCapability( C )により新しいpromsieCapabilityが帰ってくる
+## [Page 506](Ecma-262.pdf#page=506&zoom=page-width,-14,410)
+> 25.4.1.5.1GetCapabilitiesExecutorFunctions
+
+ここがややこしい、
+逆にこっちはpromise.Capability.[[Resolve]]がundefinedであることをチェックする。
+
+
+## [Page 506](Ecma-262.pdf#page=506&zoom=page-width,-14,410)
+> 25.4.1.6 IsPromise ( x )
+
+[[PromiseState]]を持ってるかどうかで判定する。
+
+## [Page 507](Ecma-262.pdf#page=507&zoom=page-width,-14,743)
+> 25.4.1.8 TriggerPromiseReactions ( reactions, argument )
+
+reactionは追加した順にPromiseJobs queueに追加される。
+
+- [What is correct execution sequence when attach multiple handlers to the same promise. · Issue #34 · getify/native-promise-only](https://github.com/getify/native-promise-only/issues/34 "What is correct execution sequence when attach multiple handlers to the same promise. · Issue #34 · getify/native-promise-only")
+- http://trac.webkit.org/browser/trunk/Source/JavaScriptCore/builtins/Operations.Promise.js?rev=186298#L88
+- [promises-unwrapping/testable-implementation.js at 2a942729249c2490507a1ae6c9a24f8fa11a98e4 · domenic/promises-unwrapping](https://github.com/domenic/promises-unwrapping/blob/2a942729249c2490507a1ae6c9a24f8fa11a98e4/reference-implementation/lib/testable-implementation.js#L212-L218 "promises-unwrapping/testable-implementation.js at 2a942729249c2490507a1ae6c9a24f8fa11a98e4 · domenic/promises-unwrapping")
+
+
+
+がPromise/A+では書いてなかった部分。
+
+## [Page 507](Ecma-262.pdf#page=507&zoom=page-width,-14,589)
+> 25.4.2 Promise Jobs
+
+
+## [Page 507](Ecma-262.pdf#page=507&zoom=page-width,-14,504)
+> PromiseReactionJob ( reaction, argument 
+
+
+## [Page 507](Ecma-262.pdf#page=507&zoom=page-width,-14,504)
+> PromiseResolveThenableJob ( promiseToResolve, thenable, then)
+
+2種類のjobをもってる
+## [Page 508](Ecma-262.pdf#page=508&zoom=page-width,-14,847)
+> 25.4.3 The Promise Constructor
+
+new Promise((resolve, reject) => {})
+
+
+
+## [Page 509](Ecma-262.pdf#page=509&zoom=page-width,-14,773)
+> 25.4.4.1.1Runtime Semantics: PerformPromiseAll( iteratorRecord, constructor, resultCapability)
+
+`Promise.all`の実態
+
+iterableを引数ととして受けるので、それをrepeatして処理していく。
+
+## [Page 510](Ecma-262.pdf#page=510&zoom=page-width,-14,256)
+> 25.4.4.3.1Runtime Semantics:  PerformPromiseRace ( iteratorRecord, promiseCapability, C )
+
+
+Promise.raceは意外とシンプル。
+新しいpromiseCapabilityを作って、
+
+promises.forEach(promise => promise.then(promise.Capability.resolve, promise.Capability.reject)
+
+するだけという。
+
+基本投げっぱなし。
+
+## [Page 511](Ecma-262.pdf#page=511&zoom=page-width,-14,617)
+> Promise.reject ( r )
+
+
+## [Page 511](Ecma-262.pdf#page=511&zoom=page-width,-14,571)
+> Promise.resolve ( x )
+
+ドラフトと違ってリリース版で入ったもの
+
+- [Fixing `Promise.resolve()`](https://esdiscuss.org/topic/fixing-promise-resolve "Fixing `Promise.resolve()`")
+
+ドラフトでは@@speciesを参照していたので、
+
+```
+p = Promise.resolve(weakPromise);
+p = Promise.resolve(timeoutPromise);
+```
+
+とやってもそれぞれWeakPromiseやtimoutPromiseのPromiseが帰ってきてた。
+
+それが欲しければ、以下のように書くほうがよいので、それを治すために@@speciesじゃなくて常にthis Constructorを参照するように変わった
+
+```
+pp = WeakPromise.resolve(p);
+pp = TimeoutPromise.resolve(p);
+```
+
+
+## [Page 513](Ecma-262.pdf#page=513&zoom=page-width,-14,788)
+> Properties of Promise Instances
+
+promiseのインスタンスは[[PromiseFulfillReactions]]と[[PromiseRejectReactions]]のfieldを持っていて、stateが変わった時に呼ばれるreactionのリスト
