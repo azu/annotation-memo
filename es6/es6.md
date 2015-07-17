@@ -463,3 +463,119 @@ pp = TimeoutPromise.resolve(p);
 > Properties of Promise Instances
 
 promiseのインスタンスは[[PromiseFulfillReactions]]と[[PromiseRejectReactions]]のfieldを持っていて、stateが変わった時に呼ばれるreactionのリスト
+
+## [Page 513](Ecma-262.pdf#page=513&zoom=page-width,-9,606)
+> 26Reflection
+
+Reflection API
+
+- [harmony-reflect/api.md at master · tvcutsem/harmony-reflect](https://github.com/tvcutsem/harmony-reflect/blob/master/doc/api.md "harmony-reflect/api.md at master · tvcutsem/harmony-reflect")
+- [Home · tvcutsem/harmony-reflect Wiki](https://github.com/tvcutsem/harmony-reflect/wiki "Home · tvcutsem/harmony-reflect Wiki")
+
+## [Page 514](Ecma-262.pdf#page=513&zoom=page-width,-9,149)
+> Reflect.defineProperty ( target,propertyKey, attributes )
+
+Object.definePropertyと同じに見える
+
+
+## [Page 514](Ecma-262.pdf#page=514&zoom=page-width,-9,842)
+> Reflect.deleteProperty ( target, propertyKey )
+
+delete演算子
+## [Page 514](Ecma-262.pdf#page=514&zoom=page-width,-9,625)
+> Reflect.enumerate( target )
+
+```js
+
+var iterator = Reflect.enumerate(target);
+var nxt = iterator.next();
+```
+
+iteratorを取れる
+## [Page 514](Ecma-262.pdf#page=514&zoom=page-width,-9,604)
+> Reflect.get ( target,propertyKey [ , receiver ])
+
+target[propertyKey] のgetをする。
+receiverが`this`?
+
+
+
+## [Page 514](Ecma-262.pdf#page=514&zoom=page-width,-9,323)
+> Reflect.getPrototypeOf ( target )
+
+`__proto__`の代わりにこっち。
+`__proto__`は互換性のために残ってる
+
+## [Page 515](Ecma-262.pdf#page=514&zoom=page-width,-9,99)
+> Reflect.has ( target, propertyKey )
+
+```
+propertyKey in target
+```
+
+内部的には`[[HasProperty]](key)`
+
+
+## [Page 515](Ecma-262.pdf#page=515&zoom=page-width,-9,808)
+> Reflect.ownKeys( target )
+
+`target.[[OwnPropertyKeys]]()`
+
+基本的にReflect  APIは `target.[[internal prop]]` を叩くだけ
+
+
+## [Page 515](Ecma-262.pdf#page=515&zoom=page-width,-9,632)
+> Reflect.set ( target,propertyKey, V [ , receiver ] )
+
+`target[name] = value;`
+
+この辺は [Page 23](Ecma-262.pdf#page=23)あたりのTable 5 — Essential Internal Methodsに載ってる内部メソッド。
+
+
+## [Page 515](Ecma-262.pdf#page=515&zoom=page-width,-9,358)
+> Reflect.setPrototypeOf( target, proto )
+
+`target.__proto__ = proto;`
+## [Page 515](Ecma-262.pdf#page=515&zoom=page-width,-9,290)
+> 26.2Proxy Objects
+
+Proxyオブジェクト. %Proxy%
+
+## [Page 516](Ecma-262.pdf#page=516&zoom=page-width,-9,809)
+> Proxy.revocable( target, handler)
+
+revocable  Proxy  object を作るメソッド
+
+## [Page 516](Ecma-262.pdf#page=516&zoom=page-width,-9,495)
+> Each Proxy revocation function has a [[RevocableProxy]] internal slot.
+
+Proxyはそれぞれ`[[RevocableProxy]]` internal slotを持ってる。
+
+```
+p = [[RevocableProxy]]
+p.[[ProxyHandler]]
+p.[[ProxyTarget]]
+```
+
+という形でProxyの情報を持っている。
+
+
+## [Page 516](Ecma-262.pdf#page=516&zoom=page-width,-9,392)
+> 26.3Module Namespace Objects
+
+
+## [Page 516](Ecma-262.pdf#page=516&zoom=page-width,-9,392)
+> module  namespace exotic  object
+
+exotic objectである、プロパティベースでモジュールのexportされているバインディングに対してアクセス出来る。
+
+コンストラクタではない。
+
+これらのname space objectは `import`, `import * as`でとってこれる。
+これで取ってきたオブジェクトについて
+
+
+## [Page 516](Ecma-262.pdf#page=516&zoom=page-width,-9,392)
+> @@toStringTag
+
+m.toString()は`"Module"`である。
