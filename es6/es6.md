@@ -531,6 +531,10 @@ propertyKey in target
 
 この辺は [Page 23](Ecma-262.pdf#page=23)あたりのTable 5 — Essential Internal Methodsに載ってる内部メソッド。
 
+`[[]]` は internalのマーク
+
+> Internal methods and internal slots are identified within this specification using names enclosed in double square brackets [[ ]]
+
 
 ## [Page 515](Ecma-262.pdf#page=515&zoom=page-width,-9,358)
 > Reflect.setPrototypeOf( target, proto )
@@ -579,3 +583,95 @@ exotic objectである、プロパティベースでモジュールのexportさ�
 > @@toStringTag
 
 m.toString()は`"Module"`である。
+## [Page 543](Ecma-262.pdf#page=542&zoom=page-width,-9,38)
+> B.1.3HTML-like Comments
+
+Annex Bで`<!-- -->`がコメントとして認識される仕様が入ってる。
+## [Page 548](Ecma-262.pdf#page=548&zoom=page-width,-9,533)
+> Object.prototype.__proto__
+
+get/setPrototypeOf
+## [Page 549](Ecma-262.pdf#page=548&zoom=page-width,-9,176)
+> String.prototype.substr (start, length)
+
+substrも一応残ってる。
+
+## [Page 549](Ecma-262.pdf#page=549&zoom=page-width,-9,775)
+> String.prototype.anchor(name)
+
+
+## [Page 549](Ecma-262.pdf#page=549&zoom=page-width,-9,775)
+> Runtime Semantics: CreateHTML( string, tag, attribute, value)
+
+String#big とかは`CreateHTML`を使って作るようになってる。
+## [Page 551](Ecma-262.pdf#page=551&zoom=page-width,-9,680)
+> Date.prototype.getYear ( )
+
+`date.getYear()`もdeprecated
+## [Page 551](Ecma-262.pdf#page=551&zoom=page-width,-9,196)
+> RegExp.prototype.compile (pattern, flags )
+
+今はなきcompile
+## [Page 552](Ecma-262.pdf#page=552&zoom=page-width,-9,373)
+> Labelled Function Declarations
+
+```
+labeledItem : function a(){
+}
+```
+
+こんなのあったの?
+strict modeだとSymtax Errorになる。
+## [Page 554](Ecma-262.pdf#page=554&zoom=page-width,-9,591)
+> FunctionDeclarations in IfStatement Statement Clauses
+
+if内のfunction定義。
+一応互換性のためにあるけど
+
+
+## [Page 554](Ecma-262.pdf#page=554&zoom=page-width,-9,413)
+> VariableStatements in Catch blocks
+
+catch内でのvar宣言
+## [Page 557](Ecma-262.pdf#page=557&zoom=page-width,-10,799)
+> implements, interface, let, package, private, protected, public, static,andyieldare reserved wordswithin strict mode code
+
+strict modeは予約語が増える。
+
+
+## [Page 559](Ecma-262.pdf#page=558&zoom=page-width,-10,99)
+> AnnexD  Corrections and Clarifications in ECMAScript 2015 with Possible Compatibility Impact
+
+
+## [Page 559](Ecma-262.pdf#page=559&zoom=page-width,-10,697)
+> Previous  editions  permitted  the  TimeClip  abstract  operation  to  return  either  +0  or 0as  the representation  of  a  0  time  value
+
++0 -0どちらかをかえしてたけど、+0に固定された。
+
+
+## [Page 561](Ecma-262.pdf#page=561&zoom=page-width,-9,586)
+> In  ECMAScript  2015,  Automatic  Semicolon  Insertion  adds  a  semicolon  at  the  end  of  a  do-while statement  if  the  semicolon  is  missing.
+
+`do{}while()` で`;`が入ると。実装は
+## [Page 562](Ecma-262.pdf#page=562&zoom=page-width,-9,803)
+> In ECMAScript 2015, the function objects that are created as the values of the [[Get]] or [[Set]] attribute of accessor  properties  in  an ObjectLiteralare  not  constructor functions  and  they  do  not  have  a prototypeown property. In the previous edition, they were constructors and had a prototypeproperty
+
+method()はnew出来ない話
+
+method definitionの方はfunction expressionのobject.propとは異なる。
+
+- [ECMAScript 2015 Annex E 14.3.9](https://gist.github.com/azu/37e1877da4d991f768f1 "ECMAScript 2015 Annex E 14.3.9")
+## [Page 562](Ecma-262.pdf#page=562&zoom=page-width,-9,663)
+> In  ECMAScript  2015, if the  argument  to Object.freezeis  not  an  object  it is  treated  as  if it  was  a non-extensible  ordinary  object  with  no  own  properties.  
+
+この辺以前のバージョンでは例外を投げていた部分
+
+- [Break the Web: Object staticメソッドがES6で仕様変更になった件について](https://gist.github.com/teppeis/c50743a60832560aa1df "Break the Web: Object staticメソッドがES6で仕様変更になった件について")
+## [Page 563](Ecma-262.pdf#page=563&zoom=page-width,-9,443)
+> In  ECMAScript  2015,  the String.prototype.trimmethod  is  defined  to  recognize  white  space code  points  that may  exists  outside  of the  Unicode  BMP.
+
+code pointの厳密化に伴ってtrimがちょっと違うのか
+## [Page 563](Ecma-262.pdf#page=563&zoom=page-width,-9,337)
+> In ECMAScript 2015, source, global, ignoreCase, and multilineare accessor properties defined on the RegExp prototype object. In previous editions they were data properties defined on RegExp instances
+
+インスタンスにあったsourceなどのプロパティがRegExp.prototype.sourceに移動した。
