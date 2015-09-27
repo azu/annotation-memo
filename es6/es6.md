@@ -230,7 +230,8 @@ interfaceとはpropertyの集合を定義してもの
 > Iterable Interface Required Properties
 
 `Iterable` interfaceは`@@iterator`を持ってるオブジェクト
-(`@@iterator`はiteratorオブジェクトを返す関数)
+
+- `@@iterator`はiteratorオブジェクトを返す関数
 
 
 ## [Page 496](Ecma-262.pdf#page=496&zoom=page-width,-10,629)
@@ -238,11 +239,20 @@ interfaceとはpropertyの集合を定義してもの
 
 `Iterator` interfaceは`next`、`return`、`throw`を持つオブジェクト
 
+- nextはrequire
+- returnとthrowはoptional
+
+`next`、`return`、`throw`の返り値は`IteratorResult`オブジェクト
+
 
 ## [Page 497](Ecma-262.pdf#page=497&zoom=page-width,-10,704)
 > IteratorResult Interface Properties
 
-`IteratorResult` interfaceは`done`と`value`を持つオブジェクト
+`IteratorResult` interfaceは`done`と`value`のプロパティを持つオブジェクト
+
+- `done` : boolean
+- `value` : any
+
 ## [Page 498](Ecma-262.pdf#page=498&zoom=page-width,-9,214)
 > The GeneratorFunctionconstructor is  the  %GeneratorFunction% intrinsic.
 
@@ -256,9 +266,15 @@ Generator はサブクラス可能　
 
 `%IteratorPrototype%`を取る方法
 
+
 ## [Page 500](Ecma-262.pdf#page=500&zoom=page-width,-9,772)
 > 25.2.4 GeneratorFunction Instances
 
+`%GeneratorFunction%`
+
+> GeneratorFunctionis designed to be subclassable. 
+
+サブクラスが可能である。
 
 ## [Page 500](Ecma-262.pdf#page=500&zoom=page-width,-9,772)
 > The value of the [[FunctionKind]] internal slot for all such instances is "generator"
@@ -271,6 +287,7 @@ generatorのインスタンス=generator objectは"generator"という種類に�
 
 GeneratorオブジェクトはIteratorとIterable interfaceを持つ。
 Generator objectはgenerator functionのインスタンス
+
 
 
 
@@ -297,6 +314,11 @@ Generator Instanceは以下のinternal slotを持つ
 - [[GeneratorContext]]
 
 Generatorはexecution context stackからgeneratorContextをremoveしたり(complete)、pushしたりする(resume)
+
+## 25.3.3.2 GeneratorValidate ( generator )
+
+Validateがあるのか
+
 ## [Page 503](Ecma-262.pdf#page=503&zoom=page-width,-9,463)
 > GeneratorYield ( iterNextObj )
 
@@ -329,7 +351,8 @@ Promiseの情報はPromiseCapablity Record Fieldに入る。
 > PromiseReaction Records
 
 thenした時にどうするかの情報を保持するRecord
-
+Promiseがresolve/rejectした時にどうするかという値を持ってる。
+要はHandler
 
 ## [Page 505](Ecma-262.pdf#page=505&zoom=page-width,-14,764)
 > CreateResolvingFunctions( promise )
@@ -338,6 +361,8 @@ CreateResolvingFunctionsが25.4.1.3.1Promise RejectFunctionsと25.4.1.3.2Promise
 Promiseに対してresolveとrejectの関数を追加する。
 
 resolveとrejectは[[AlreadyResolved]]を見て、挙動が違ったりする。
+
+`[[AlreadyResolved]]`がtrueならば`undefined`を返す。
 
 
 ## [Page 506](Ecma-262.pdf#page=505&zoom=page-width,-14,178)
@@ -409,6 +434,8 @@ reactionは追加した順にPromiseJobs queueに追加される。
 
 new Promise((resolve, reject) => {})
 
+`Promise (executor)` `executor`は関数オブジェクトでないといけない。
+
 
 
 ## [Page 509](Ecma-262.pdf#page=509&zoom=page-width,-14,773)
@@ -463,6 +490,8 @@ pp = TimeoutPromise.resolve(p);
 > Properties of Promise Instances
 
 promiseのインスタンスは[[PromiseFulfillReactions]]と[[PromiseRejectReactions]]のfieldを持っていて、stateが変わった時に呼ばれるreactionのリスト
+
+`[[PromiseResult]]`はsettleとなった時にしか使わない。Promiseの値というわけ。
 
 ## [Page 513](Ecma-262.pdf#page=513&zoom=page-width,-9,606)
 > 26Reflection
